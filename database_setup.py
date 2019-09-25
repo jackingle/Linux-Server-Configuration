@@ -11,6 +11,7 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
     email = Column(String(250), nullable=False)
+    picture = Column(String(250))
 
 
 class Item(Base):
@@ -22,6 +23,13 @@ class Item(Base):
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
 
+    @property
+    def serialize(self):
+       """Return object data in easily serializeable format"""
+       return {
+           'name'         : self.name,
+           'id'           : self.id,
+       }
 
 class Equipment(Base):
     __tablename__ = 'equipment'
@@ -30,8 +38,8 @@ class Equipment(Base):
     name = Column(String(250), nullable=False)
     description = Column(String(250))
     type = Column(String(250))
-    item_id = Column(Integer, ForeignKey('item.id'))
-    item = relationship(Item)
+    equipment_id = Column(Integer, ForeignKey('item.id'))
+    equipment = relationship(Item)
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
 
