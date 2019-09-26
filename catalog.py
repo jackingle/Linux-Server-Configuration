@@ -16,7 +16,7 @@ app = Flask(__name__)
 #!Update Client Information
 CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
-APPLICATION_NAME = "Restaurant Menu Application"
+APPLICATION_NAME = "Item Catalog"
 
 
 # Connect to Database and create database session
