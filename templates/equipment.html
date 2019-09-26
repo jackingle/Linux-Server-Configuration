@@ -1,15 +1,15 @@
 <html>
-	
+
 <head>
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
 	</head>
 	<body>
 		<div class = 'pane'>
-		<h1>{{ restaurant.name }}</h1>
-		
+		<h1>{{ item.name }}</h1>
+
 		{% with messages = get_flashed_messages() %}
       {% if messages %}
-          
+
         <ul>
         {% for message in messages %}
             <li> <strong> {{ message }} </strong> </li>
@@ -20,114 +20,60 @@
 
     {% if items !=[] %}
 
-		<a href = "{{url_for('newMenuItem', restaurant_id = restaurant.id )}}">Create New Item</a>
+		<a href = "{{url_for('newEquipment', item_id = equipment.id )}}">Create New Equipment</a>
 	</br></br>
 
-	<h2>Appetizers</h2>
+	<h2>Weapons</h2>
 
 		{% for i in items %}
-		{% if i.course == 'Appetizer' %}
+		{% if i.type == 'Weapon' %}
 
 		<p>{{i.name}}</p>
-	
+
 
 		<p>{{i.description}}</p>
-	
 
-		<p>{{i.price}}</p>
-	
-		<a href='{{url_for('editMenuItem', restaurant_id = restaurant.id, menu_id=i.id ) }}' >Edit</a>
+
+		<a href='{{url_for('editEquipment', item_id = item.id, equipment_id=i.id ) }}' >Edit</a>
 	</br>
-	<a href='{{url_for('deleteMenuItem', restaurant_id = restaurant.id, menu_id=i.id ) }}' >Delete</a>
+	<a href='{{url_for('deleteEquipment', item_id = item.id, equipment_id=i.id ) }}' >Delete</a>
 </br>
 </br>
 		{% endif %}
 
 		{% endfor %}
 
-		
+
 
 		</br></br>
 
-	<h2>Entrees</h2>
+	<h2>Armor</h2>
 
 		{% for i in items %}
-		{% if i.course == 'Entree' %}
+		{% if i.type == 'Armor' %}
 
 		<p>{{i.name}}</p>
-	
+
 
 		<p>{{i.description}}</p>
-	
 
-		<p>{{i.price}}</p>
-	
-		<a href='{{url_for('editMenuItem', restaurant_id = restaurant.id, menu_id=i.id ) }}' >Edit</a>
+
+		<a href='{{url_for('editEquipment', item_id = item.id, equipment_id=i.id ) }}' >Edit</a>
 	</br>
-	<a href='{{url_for('deleteMenuItem', restaurant_id = restaurant.id, menu_id=i.id ) }}' >Delete</a>
+	<a href='{{url_for('deleteEquipment', item_id = item.id, equipment_id=i.id ) }}' >Delete</a>
 </br>
 </br>
         {% endif %}
 
 		{% endfor %}
-		
-		
+
+
 
 		</br></br>
-
-	<h2>Desserts</h2>
-
-		{% for i in items %}
-		{% if i.course == 'Dessert' %}
-
-		<p>{{i.name}}</p>
-	
-
-		<p>{{i.description}}</p>
-	
-
-		<p>{{i.price}}</p>
-	
-		<a href='{{url_for('editMenuItem', restaurant_id = restaurant.id, menu_id=i.id ) }}' >Edit</a>
-	
-	<a href='{{url_for('deleteMenuItem', restaurant_id = restaurant.id, menu_id=i.id ) }}' >Delete</a>
-</br>
-</br>
-		{% endif %}
-
-		{% endfor %}
-		
-		
-
-		</br></br>
-
-	<h2>Beverages</h2>
-
-		{% for i in items %}
-		{% if i.course == 'Beverage' %}
-
-		<p>{{i.name}}</p>
-	
-
-		<p>{{i.description}}</p>
-	
-
-		<p>{{i.price}}</p>
-
-		<a href='{{url_for('editMenuItem', restaurant_id = restaurant.id, menu_id=i.id ) }}' >Edit</a>
-	</br>
-	<a href='{{url_for('deleteMenuItem', restaurant_id = restaurant.id, menu_id=i.id ) }}' >Delete</a>
-</br>
-</br>
-{% endif %}
-
-		{% endfor %}
-		
-		
 
 		{% else %}
-		<p> You currently have no menu items. <p>
-		<a href = "{{url_for('newMenuItem', restaurant_id = restaurant.id )}}">Create New Item</a>
+		<p> You currently have no equipment. <p>
+		<a href = "{{url_for('newEquipment', item_id = item.id )}}">Create New Equipment</a>
 			{% endif %}
 </div>
 	</body>

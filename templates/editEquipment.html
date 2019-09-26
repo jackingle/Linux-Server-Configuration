@@ -4,56 +4,38 @@
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
 	</head>
 
-<body><h1> Edit Menu Item </h1>
+<body><h1> Edit Equipment </h1>
 
 <form action="#" method = 'post'>
 
 
 	<p>Name:</p>
-		<input type ='text' size='30' name='name' placeholder = '{{item.name }}'>
+		<input type ='text' size='30' name='name' placeholder = '{{equipment.name }}'>
 	<p>Description:</p>
-		<input type ='text' size='30' name='description' placeholder = '{{item.description}}'>
-	<p>Price:</p>
-		<input type ='text' size='30' name='price' placeholder = '{{item.price}}'>
-	<p>Course:<p>
+		<input type ='text' size='30' name='description' placeholder = '{{equipment.description}}'>
+	<p>Type:<p>
 
-	{% if item.course == 'Appetizer' %}
-		<dd><input type ='radio' name='course' value='Appetizer'checked >Appetizer</dd>
+	{% if item.course == 'Weapon' %}
+		<dd><input type ='radio' name='course' value='Weapon'checked >Weapon</dd>
 	{%else%}
-	<dd><input type ='radio' name='course' value='Appetizer' >Appetizer</dd>
+	<dd><input type ='radio' name='course' value='Weapon' >Weapon</dd>
     {% endif %}
 
-    {% if item.course == 'Entree' %}
-       <dd><input type ='radio' name='course' value='Entree' checked>Entree</dd>
+    {% if item.course == 'Armor' %}
+       <dd><input type ='radio' name='course' value='Armor' checked>Armor</dd>
 
     {%else%}
-		<dd><input type ='radio' name='course' value='Entree'>Entree</dd>
+		<dd><input type ='radio' name='course' value='Armor'>Armor</dd>
     {% endif %}
-
-	{% if item.course == 'Dessert'%}
-		<dd><input type ='radio' name='course' value='Dessert'checked >Dessert</dd>
-
-	{% else %}
-	   <dd><input type ='radio' name='course' value='Dessert'>Dessert</dd>
-
-	{% endif %}
-
-
-	{%if item.course =='Beverage'%}
-		<dd><input type ='radio' name='course' value='Beverage'checked >Beverage</dd>
-	{% else %}
-		<dd><input type ='radio' name='course' value='Beverage'>Beverage</dd>
-	{% endif %}
 
 
 
 <input type='submit' value='Edit'>
 
 
-<a href = '#'> Cancel </a>
+<a href = '{{url_for('showEquipment')}}'> Cancel </a>
 
 
 </form>
 </body>
 </html>
-
