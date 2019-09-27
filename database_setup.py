@@ -38,8 +38,6 @@ class Equipment(Base):
     name = Column(String(250), nullable=False)
     description = Column(String(250))
     type = Column(String(250))
-    equipment_id = Column(Integer, ForeignKey('item.id'))
-    equipment = relationship(Item)
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
 
