@@ -1,0 +1,8 @@
+__pycache__
+*.pyc
+.vagrant
+catalog.py
+db_setup.py
+project.py
+items.db
+items.json

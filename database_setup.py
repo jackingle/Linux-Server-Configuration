@@ -14,14 +14,15 @@ class User(Base):
     picture = Column(String(250))
 
 
-class Item(Base):
-    __tablename__ = 'item'
+class School(Base):
+    __tablename__ = 'school'
 
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
     description = Column(String(250))
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
+    spells = relationship("Spell", backref="School")
 
     @property
     def serialize(self):
@@ -29,17 +30,21 @@ class Item(Base):
        return {
            'name'         : self.name,
            'id'           : self.id,
+           'description'  : self.description,
+           'user_id'      : self.user_id,
        }
 
-class Equipment(Base):
-    __tablename__ = 'equipment'
+class Spell(Base):
+    __tablename__ = 'spell'
 
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
     description = Column(String(250))
-    type = Column(String(250))
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
+
+    school_id = Column(Integer, ForeignKey('school.id'))
+
 
 
     @property
@@ -49,11 +54,11 @@ class Equipment(Base):
             'id': self.id,
             'name': self.name,
             'description': self.description,
-            'type': self.type,
+            'school_id': self.school_id
         }
 
 
-engine = create_engine('sqlite:///items.db')
+engine = create_engine('sqlite:///spell.db')
 
 
 Base.metadata.create_all(engine)

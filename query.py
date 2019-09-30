@@ -1,9 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from database_setup import Item, Base, Equipment, User
+from database_setup import Base, Spell, School, User
 
-engine = create_engine('sqlite:///items.db')
+engine = create_engine('sqlite:///spell.db')
 # Bind the engine to the metadata of the Base class so that the
 # declaratives can be accessed through a DBSession instance
 Base.metadata.bind = engine
@@ -18,11 +18,16 @@ DBSession = sessionmaker(bind=engine)
 # session.rollback()
 session = DBSession()
 
-q =  session.query(Equipment).all()
+q =  session.query(School).all()
 
-for Equipment in q:
-    print (Equipment.name)
+for School in q:
+    print (School.name)
 
-items = session.query(Item).all()
-for item in items:
-    print (item.name)
+items = session.query(Spell).all()
+for Spell in items:
+        print (Spell.id, Spell.name)
+
+usr = session.query(User).all()
+
+for User in usr:
+    print(User.id)
