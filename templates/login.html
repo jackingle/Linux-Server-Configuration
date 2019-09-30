@@ -1,3 +1,7 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+
 <!DOCTYPE html>
 <html lang="en">
 ​
@@ -50,9 +54,9 @@
                     contentType: 'application/octet-stream; charset=utf-8',
                     data: auth_code,
                     success: function (result) {
-                        $("body").html(result);
+                        $('#result').html(result);
                         setTimeout(function () {
-                            window.location.href = '/item'
+                            window.location.href = '/item/';
                         }, 3000);
 ​
                     }
