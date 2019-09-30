@@ -27,20 +27,11 @@
                     console.log("loaded auth2")
                     auth2 = gapi.auth2.init({
                         client_id: '1008474172856-7lefq3vb51tm3ecop2ihnf5nmdaqc53v.apps.googleusercontent.com',
-                        scope: 'profile email',
-                        fetch_basic_profile: true,
-                        redirect_uri: ''
+                        scope: 'profile email'
                     });
 ​
                     $("#signinButton").click(function () {
                         console.log("clicked")
-                        var profile = auth2.currentUser.get().getBasicProfile();
-                        console.log('Image URL: ' + profile.getImageUrl());
-                        console.log('ID: ' + profile.getId());
-                        console.log('Full Name: ' + profile.getName());
-                        console.log('Given Name: ' + profile.getGivenName());
-                        console.log('Family Name: ' + profile.getFamilyName());
-                        console.log('Email: ' + profile.getEmail());
                         auth2.grantOfflineAccess({
                             'redirect_uri': 'postmessage'
                         }).then(offlineAccess);
@@ -59,7 +50,7 @@
                     contentType: 'application/octet-stream; charset=utf-8',
                     data: auth_code,
                     success: function (result) {
-                        $("itemlist").html(result);
+                        $("body").html(result);
                         setTimeout(function () {
                             window.location.href = '/item'
                         }, 3000);
