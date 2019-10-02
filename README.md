@@ -4,4 +4,41 @@ This project is in development for Udacity.  It consists of an Item Catalog incl
 
 # The Database
 
-The database contains items that you might find in a traditional RPG(Role Playing Game).  Three tables within the database include Users, Items, and Equipment.  Equipment are of a specific type of item including weapons and armor that are worn or 'equipped' by characters within the RPG.  
+The database contains spells that you might find in a traditional RPG(Role Playing Game).  Three tables within the database include Users, School, and Spell.  Spells in RPGs are often split into Schools of Magic.  
+
+## Installation
+
+This project requires a virtual machine provided by Udacity and Python.
+
+- Python 2 or 3(any version)
+- Vagrant
+- ViritualBox
+
+The necessary virtual machine can be found [at this link](https://github.com/udacity/fullstack-nanodegree-vm/blob/master/vagrant/Vagrantfile).
+Install Vagrant from [here](https://www.vagrantup.com/downloads.html).
+Install ViritualBox from [here](https://www.virtualbox.org/wiki/Download_Old_Builds_5_1).
+
+
+### Start the virtual machine
+
+You will need some form of Unix shell in order to execute commands to log in to
+the virtual machine.  After you have installed the dependencies, use the
+following commands.  
+```
+cd /vagrant/
+vagrant up
+vagrant ssh
+```
+
+### Run the server file
+
+Place the file spelllist.py in the shared folder for the virtual machine. The example
+code below shows python3 being used but this program will work in python2 as
+well.
+```
+python3 spelllist.py
+```
+
+### Access the website locally
+
+The URL for the program is set to work only at http://localhost:8000

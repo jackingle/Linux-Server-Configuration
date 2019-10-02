@@ -7,6 +7,8 @@ import random
 import string
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
+# import google.oauth2.credentials
+# import google_auth_oauthlib.flow
 import httplib2
 import json
 from flask import make_response
@@ -18,6 +20,19 @@ CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Item Catalog"
 
+# flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+#     'client_secret.json',
+#     ['openid email'])
+# flow.redirect_uri = 'http://localhost:8000'
+
+# Generate URL for request to Google's OAuth 2.0 server.
+# Use kwargs to set optional request parameters.
+# authorization_url, state = flow.authorization_url(
+#     # Enable offline access so that you can refresh an access token without
+#     # re-prompting the user for permission. Recommended for web server apps.
+#     access_type='offline',
+#     # Enable incremental authorization. Recommended as a best practice.
+#     include_granted_scopes='true')
 
 # Connect to Database and create database session
 engine = create_engine('sqlite:///spell.db')
@@ -30,6 +45,8 @@ session = DBSession()
 # Create anti-forgery state token
 @app.route('/login')
 def showLogin():
+    # numTuple = ('1', '2', '3', '4')
+    # state = ''.join(numTuple)
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
         for x in range(32))
     login_session['state'] = state
@@ -50,7 +67,7 @@ def gconnect():
     try:
         # Upgrade the authorization code into a credentials object
         oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
-        oauth_flow.redirect_uri = 'postmessage'
+        oauth_flow.redirect_uri = 'http://localhost:8000'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
         response = make_response(
@@ -264,9 +281,9 @@ def showSchools():
 @app.route('/school/<int:school_id>/spell/')
 def showSpell(school_id):
     school = session.query(School).filter_by(id=school_id).one()
-    items = session.query(Spell).filter_by(
+    spells = session.query(Spell).filter_by(
         school_id=school_id).all()
-    return render_template('spells.html', items=items, school_id=school_id)
+    return render_template('spells.html', spells=spells, school=school, school_id=school_id)
 
 
 # Create a new spell
