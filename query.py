@@ -21,13 +21,19 @@ session = DBSession()
 q =  session.query(School).all()
 
 for School in q:
-    print (School.name)
+    print (School.name, School.id)
 
 items = session.query(Spell).all()
 for Spell in items:
-        print (Spell.id, Spell.name)
+        print (Spell.school_id, Spell.name)
 
 usr = session.query(User).all()
 
 for User in usr:
     print(User.id)
+
+
+Spell1 = School(id = 2, name = "Evocation", description = "Spells that manipulate energy or create something from nothing. ", user_id = 1)
+
+session.add(Spell1)
+session.commit()

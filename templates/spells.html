@@ -24,7 +24,7 @@
 
     {% if items !=[] %}
 
-		<a href = "{{url_for('newEquipment', item_id = equipment.id )}}">Create New Equipment</a>
+		<a href = "{{url_for('newSpell', school_id = school.id )}}">Create New Spell</a>
 	</br></br>
 
 	<h2>Weapons</h2>
@@ -38,9 +38,9 @@
 		<p>{{i.description}}</p>
 
 
-		<a href='{{url_for('editEquipment', item_id = item.id, equipment_id=i.id ) }}' >Edit</a>
+		<a href='{{url_for('editSpell', school_id = item.id, spell_id=i.id ) }}' >Edit</a>
 	</br>
-	<a href='{{url_for('deleteEquipment', item_id = item.id, equipment_id=i.id ) }}' >Delete</a>
+	<a href='{{url_for('deleteSpell', school_id = item.id, spell_id=i.id ) }}' >Delete</a>
 </br>
 </br>
 		{% endif %}
@@ -62,9 +62,9 @@
 		<p>{{i.description}}</p>
 
 
-		<a href='{{url_for('editEquipment', item_id = item.id, equipment_id=i.id ) }}' >Edit</a>
+		<a href='{{url_for('editSpell', school_id = school.id, spell_id=i.id ) }}' >Edit</a>
 	</br>
-	<a href='{{url_for('deleteEquipment', item_id = item.id, equipment_id=i.id ) }}' >Delete</a>
+	<a href='{{url_for('deleteSpell', school_id = school.id, spell_id=i.id ) }}' >Delete</a>
 </br>
 </br>
         {% endif %}
@@ -76,10 +76,12 @@
 		</br></br>
 
 		{% else %}
-		<p> You currently have no equipment. <p>
-		<a href = "{{url_for('newEquipment', item_id = item.id )}}">Create New Equipment</a>
+		<p> You currently have no spell. <p>
+		<a href = "{{url_for('newSpell', school_id = item.id )}}">Create New Spell</a>
 			{% endif %}
 </div>
 	</body>
 
 </html>
+
+{% endblock %}

@@ -23,6 +23,7 @@ class School(Base):
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
     spells = relationship("Spell", backref="School")
+    
 
     @property
     def serialize(self):

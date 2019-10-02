@@ -26,20 +26,24 @@ session = DBSession()
 # session.add(Item1)
 # session.commit()
 
-
-Spell1 = Spell(name = "Alarm", description = "You set an alarm against unwanted intrusion. Choose a door, a window, or an area within range that is no larger than a 20-foot cube. Until the spell ends, an alarm alerts you whenever a Tiny or larger creature touches or enters the warded area. When you cast the spell, you can designate creatures that won't set off the alarm. You also choose whether the alarm is mental or audible.", user_id = 1)
+Spell1 = School(id = 2, name = "Evocation", description = "Spells that manipulate energy or create something from nothing. ", user_id = 1)
 
 session.add(Spell1)
 session.commit()
-
-User1 = User(id = 1, name = "Jack", email = "jack@jack.com", picture="something.jpg")
-
-session.add(User1)
-session.commit()
-
-Usr2 = User(id = 243, name = "Jack", email = "jaxon.chillforce@gmail.com")
-
-session.add(Usr2)
-session.commit()
+#
+# Spell1 = Spell(name = "Alarm", description = "You set an alarm against unwanted intrusion. Choose a door, a window, or an area within range that is no larger than a 20-foot cube. Until the spell ends, an alarm alerts you whenever a Tiny or larger creature touches or enters the warded area. When you cast the spell, you can designate creatures that won't set off the alarm. You also choose whether the alarm is mental or audible.", user_id = 1)
+#
+# session.add(Spell1)
+# session.commit()
+#
+# User1 = User(id = 1, name = "Jack", email = "jack@jack.com", picture="something.jpg")
+#
+# session.add(User1)
+# session.commit()
+#
+# Usr2 = User(id = 243, name = "Jack", email = "jaxon.chillforce@gmail.com")
+#
+# session.add(Usr2)
+# session.commit()
 
 print ("added items!")
