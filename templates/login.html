@@ -6,70 +6,53 @@
 <html lang="en">
 ​
 <head>
-    <link href='//fonts.googleapis.com/css?family=Roboto:400,300,700' rel='stylesheet' type='text/css'>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-​
-    <!--google -->
-    <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>`
-    <meta name="google-signin-scope" content="profile email">
-    <meta name="google-signin-client_id" content="1008474172856-7lefq3vb51tm3ecop2ihnf5nmdaqc53v.apps.googleusercontent.com">
-​
+<link href='//fonts.googleapis.com/css?family=Roboto:400,300,700' rel='stylesheet' type='text/css'>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
+<meta name="google-signin-scope" content="profile email">
+<meta name="google-signin-client_id" content="1008474172856-7lefq3vb51tm3ecop2ihnf5nmdaqc53v.apps.googleusercontent.com">
 </head>
-​
+
 <body>
     <div class="container">
-​
-        <!-- start Google Start Login -->
-        <h1>Sign with your Google Account</h1>
-​
+​       <h1>Sign with your Google Account</h1>
+
         <button class="g-signin2" id="signinButton">Sign in with
             Google</button>
         <script>
-            function runlog1 = console.log("init")
-            function runlog2 = console.log("signinButton")
             function init() {
-​            console.log("init")
+                console.log("init")
                 gapi.load('auth2', function () {
                     console.log("loaded auth2")
-                    auth2 = gapi.auth2.init({
+                    auth2 = gapi.auth2.getAuthInstance({
                         client_id: '1008474172856-7lefq3vb51tm3ecop2ihnf5nmdaqc53v.apps.googleusercontent.com',
                         scope: 'profile email openid'
-                    });
-​
+                        });
                     $("#signinButton").click(function () {
                         console.log("clicked")
-                        auth2.grantOfflineAccess({
-                            'redirect_uri': 'http://localhost:8000/gconnect'
-                        }).then(offlineAccess);
+                        auth2.grantOfflineAccess().then(offlineAccess);
                     });
                 });
             }
-​
             function offlineAccess(resp) {
-                console.log("in offline access")
-                var auth_code = resp.code;
-                console.log(resp);
-                $.ajax({
-                    type: "POST",
-                    url: "{{url_for('gconnect')}}?state={{STATE}}",
-                    processData: false,
-                    contentType: 'application/octet-stream; charset=utf-8',
-                    data: auth_code,
-                    success: function (result) {
-                        $('body').html(result);
-                        setTimeout(function () {
-                            window.location.href = '/spell/';
-                        }, 3000);
-​
-                    }
-                });
-​
-            }
+console.log(resp)
+              var auth_code = resp.code;
+              $.ajax({
+                  type: "POST",
+                  url: "http://localhost:8000/gconnect?state={{STATE}}",
+                  processData: false,
+                  contentType: 'application/octet-stream; charset=utf-8',
+                  data: auth_code,
+                  success: function (result) {
+                      $('body').html(result);
+                      setTimeout(function () {
+                          window.location.href = '/spell/';
+                      }, 3000);
+                  }
+              });
+}
         </script>
-​
-        <!-- start Google End Login -->
-​
-    </div>
+​</div>
 </body>
 ​{% endblock %}
 </html>

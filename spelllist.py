@@ -41,33 +41,57 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+def createUser(login_session):
+    newUser = User(name=login_session['username'], email=login_session[
+                   'email'], picture=login_session['picture'])
+    session.add(newUser)
+    session.commit()
+    user = session.query(User).filter_by(email=login_session['email']).one()
+    return user.id
+
+
+def getUserInfo(user_id):
+    user = session.query(User).filter_by(id=user_id).one()
+    return user
+
+
+def getUserID(email):
+    try:
+        user = session.query(User).filter_by(email=email).one()
+        return user.id
+    except:
+        return None
 
 # Create anti-forgery state token
 @app.route('/login')
 def showLogin():
-    # numTuple = ('1', '2', '3', '4')
-    # state = ''.join(numTuple)
-    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
-        for x in range(32))
+    numTuple = ('1', '2', '3', '4')
+    state = ''.join(numTuple)
+    # state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+    #     for x in range(32))
     login_session['state'] = state
+    print ("help"+login_session['state'])
     # return "The current session state is %s" % login_session['state']
     return render_template('login.html', STATE=state)
 
 
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
-    # Validate state token
+    #Validate state token
+    print ("Hey")
+    print (login_session['state'])
+    print(request.args.get('state'))
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-    # Obtain authorization code
+    #Obtain authorization code
     code = request.data
 
     try:
         # Upgrade the authorization code into a credentials object
         oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
-        oauth_flow.redirect_uri = 'http://localhost:8000'
+        oauth_flow.redirect_uri = 'http://localhost:8000/gconnect'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
         response = make_response(
@@ -80,7 +104,7 @@ def gconnect():
     url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
            % access_token)
     h = httplib2.Http()
-    result = json.loads(h.request(url, 'GET')[1])
+    result = json.loads(h.request(url, 'GET')[1].decode('utf-8'))
     # If there was an error in the access token info, abort.
     if result.get('error') is not None:
         response = make_response(json.dumps(result.get('error')), 500)
@@ -103,7 +127,7 @@ def gconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    stored_access_token = login_session.get('access_token')
+    stored_access_token = getUserID.get('access_token')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_access_token is not None and gplus_id == stored_gplus_id:
         response = make_response(json.dumps('Current user is already connected.'),
