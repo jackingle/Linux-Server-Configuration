@@ -18,22 +18,34 @@ DBSession = sessionmaker(bind=engine)
 # session.rollback()
 session = DBSession()
 
-q =  session.query(School).all()
+# q =  session.query(School).all()
+#
+# for School in q:
+#     print (School.name, School.id)
+#
+# items = session.query(Spell).all()
+# for Spell in items:
+#         print (Spell.school_id, Spell.name, Spell.user_id)
 
-for School in q:
-    print (School.name, School.id)
+# usr = session.query(User).all()
+#
+# for User in usr:
+#     print(User.id, User.email, User.name)
 
-items = session.query(Spell).all()
-for Spell in items:
-        print (Spell.school_id, Spell.name)
+# spells = session.query(Spell).filter_by(
+#     spell_id=Spell.id).all()
 
-usr = session.query(User).all()
+# school_id = 1
+# schools = session.query(School).filter_by(id=school_id).one()
+# for school in schools:
+#     print(school.name, school.id)
 
-for User in usr:
-    print(User.id)
+spells = session.query(Spell).filter_by(school_id=Abjuration).all()
 
+for spell in spells:
+     print(spell.id, spell.name, spell.description)
 
-Spell1 = School(id = 2, name = "Evocation", description = "Spells that manipulate energy or create something from nothing. ", user_id = 1)
-
-session.add(Spell1)
-session.commit()
+# Spell1 = School(id = 2, name = "Evocation", description = "Spells that manipulate energy or create something from nothing. ", user_id = 1)
+#
+# session.add(Spell1)
+# session.commit()

@@ -14,30 +14,17 @@
 
 
 	<p>Name:</p>
-		<input type ='text' size='30' name='name' placeholder = '{{equipment.name }}'>
+		<input type ='text' size='30' name='name' placeholder = '{{spell.name }}'>
 	<p>Description:</p>
-		<input type ='text' size='30' name='description' placeholder = '{{equipment.description}}'>
-	<p>Type:<p>
+		<input type ='text' size='30' name='description' placeholder = '{{spell.description}}'>
 
-	{% if item.course == 'Weapon' %}
-		<dd><input type ='radio' name='course' value='Weapon'checked >Weapon</dd>
-	{%else%}
-	<dd><input type ='radio' name='course' value='Weapon' >Weapon</dd>
-    {% endif %}
-
-    {% if item.course == 'Armor' %}
-       <dd><input type ='radio' name='course' value='Armor' checked>Armor</dd>
-
-    {%else%}
-		<dd><input type ='radio' name='course' value='Armor'>Armor</dd>
-    {% endif %}
 
 
 
 <input type='submit' value='Edit'>
 
 
-<a href = '{{url_for('showEquipment')}}'> Cancel </a>
+<a href = '{{url_for('showSpell')}}'> Cancel </a>
 
 
 </form>

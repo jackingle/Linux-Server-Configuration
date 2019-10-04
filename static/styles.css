@@ -1,14 +1,33 @@
-body            { font-family: sans-serif; background-color: black}
-h1, h2, h3, h4       { color: #FF9900; }
-h1, h2          { font-family: 'Georgia', serif; margin: 0; }
-h1              { border-bottom: 2px solid #eee; }
-h2              { font-size: 1.2em; }
-#header {background-color: black}
-p, dd, dt               { color: #FF9900;}
+body {
+    font-family: sans-serif; background-color: black
+}
 
-a {text-decoration: none; color:red; font-size: .75em;}
+#header {
+    background-color: red
+}
 
-.pane {position:absolute; left: 25%; border: 2px solid;
+#left {
+    text-align: left;
+}
+
+#jumbo {
+    color:white;
+}
+
+a {
+    text-decoration: none;
+}
+
+.jumbotron {
+     background-image:url('school.jpg');
+     background-size: cover;
+     background-repeat: no-repeat;
+     width:80%;
+     align-self: center;
+     color:white;
+     box-shadow: 10px 10px grey;"
+}
+/* .pane {position:absolute; left: 25%; border: 2px solid;
     border-radius: 25px; padding: 5px; margin: 5px; border-color: #999999; background-color: blue }
 .header         {left:50%; text-align: center;}
 .name {width:50%;display: inline-block; float: left;}
@@ -17,4 +36,4 @@ a {text-decoration: none; color:red; font-size: .75em;}
 .editdeletepane{}
 
 .flash          { background: #cee5F5; }
-.error          { background: #f0d6d6; padding: 0.5em; }
+.error          { background: #f0d6d6; padding: 0.5em; } */

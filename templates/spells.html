@@ -1,17 +1,13 @@
 {% extends "main.html" %}
 {% block content %}
 {% include "header.html" %}
+	<div class="container-fluid" align="center">
 
-<html>
 
-<head>
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
-	</head>
-	<body>
-		<div class = 'pane'>
-		<h1>{{ spells.name }}</h1>
 
-		{% with messages = get_flashed_messages() %}
+
+	<div class = 'flash'>
+		      {% with messages = get_flashed_messages() %}
       {% if messages %}
 
         <ul>
@@ -22,66 +18,30 @@
         {% endif %}
     {% endwith %}
 
-    {% if items !=[] %}
-
-		<a href = "{{url_for('newSpell', school_id = school.id )}}">Create New Spell</a>
-	</br></br>
-
-	<h2>Weapons</h2>
-
-		{% for i in items %}
-		{% if i.type == 'Weapon' %}
-
-		<p>{{i.name}}</p>
-
-
-		<p>{{i.description}}</p>
-
-
-		<a href='{{url_for('editSpell', school_id = item.id, spell_id=i.id ) }}' >Edit</a>
-	</br>
-	<a href='{{url_for('deleteSpell', school_id = item.id, spell_id=i.id ) }}' >Delete</a>
-</br>
-</br>
-		{% endif %}
-
-		{% endfor %}
-
-
-
-		</br></br>
-
-	<h2>Armor</h2>
-
-		{% for i in items %}
-		{% if i.type == 'Armor' %}
-
-		<p>{{i.name}}</p>
-
-
-		<p>{{i.description}}</p>
-
-
-		<a href='{{url_for('editSpell', school_id = school.id, spell_id=i.id ) }}' >Edit</a>
-	</br>
-	<a href='{{url_for('deleteSpell', school_id = school.id, spell_id=i.id ) }}' >Delete</a>
-</br>
-</br>
-        {% endif %}
-
-		{% endfor %}
-
-
-
-		</br></br>
-
-		{% else %}
-		<p> You currently have no spell. <p>
-		<a href = "{{url_for('newSpell', school_id = item.id )}}">Create New Spell</a>
-			{% endif %}
 </div>
-	</body>
 
-</html>
+	<div class="jumbotron text-center" align="center">
+		 <h1>Schools of Magic</h1>
+		 <p id="jumbo">Spells divided according to specialization!</p>
+	   </div>
 
+
+
+	<div class="row padding-top padding-bottom">
+
+	{% for spell in spells %}
+
+		<a href = "{{url_for('specSpell', spell_id = spell.name, school_id = spell.school_id)}}">
+
+			<div class="row-fluid" align="left">
+						<h3>{{ spell.name }}</h3></a>
+						</div>
+						<p id="left">{{ spell.description }} </p>
+{% else %}
+
+
+			</div>
+			</div>
+
+	{% endfor %}
 {% endblock %}

@@ -21,17 +21,18 @@ session = DBSession()
 
 
 #Menu for UrbanBurger
-# Item1 = School(name = "Abjuration", id = 1, user_id = 1, description = "spells of protection, blocking, and banishing.")
-#
+# Item1 = School(name = "Conjuration", id = 1, user_id = 1,)
+# # Item1 = School(name = "Abjuration", id = 1, user_id = 1, description = "spells of protection, blocking, and banishing.")
+# #
 # session.add(Item1)
 # session.commit()
-
-Spell1 = School(id = 2, name = "Evocation", description = "Spells that manipulate energy or create something from nothing. ", user_id = 1)
-
-session.add(Spell1)
-session.commit()
 #
-# Spell1 = Spell(name = "Alarm", description = "You set an alarm against unwanted intrusion. Choose a door, a window, or an area within range that is no larger than a 20-foot cube. Until the spell ends, an alarm alerts you whenever a Tiny or larger creature touches or enters the warded area. When you cast the spell, you can designate creatures that won't set off the alarm. You also choose whether the alarm is mental or audible.", user_id = 1)
+# Spell1 = School(id = 2, name = "Evocation", description = "Spells that manipulate energy or create something from nothing. ", user_id = 1)
+#
+# session.add(Spell1)
+# session.commit()
+# #
+# Spell1 = Spell(name = "Alarm", school_id = "Abjuration", description = "You set an alarm against unwanted intrusion. Choose a door, a window, or an area within range that is no larger than a 20-foot cube. Until the spell ends, an alarm alerts you whenever a Tiny or larger creature touches or enters the warded area. When you cast the spell, you can designate creatures that won't set off the alarm. You also choose whether the alarm is mental or audible.", user_id = 1)
 #
 # session.add(Spell1)
 # session.commit()

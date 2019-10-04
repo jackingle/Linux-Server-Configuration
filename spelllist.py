@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, School, Spell, User
@@ -7,8 +8,6 @@ import random
 import string
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
-# import google.oauth2.credentials
-# import google_auth_oauthlib.flow
 import httplib2
 import json
 from flask import make_response
@@ -35,7 +34,7 @@ APPLICATION_NAME = "Item Catalog"
 #     include_granted_scopes='true')
 
 # Connect to Database and create database session
-engine = create_engine('sqlite:///spell.db')
+engine = create_engine('sqlite:///spell.db?check_same_thread=False')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
@@ -91,9 +90,11 @@ def gconnect():
     try:
         # Upgrade the authorization code into a credentials object
         oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
-        oauth_flow.redirect_uri = 'http://localhost:8000/gconnect'
+        oauth_flow.redirect_uri = 'http://localhost:8000'
         credentials = oauth_flow.step2_exchange(code)
+        print (credentials)
     except FlowExchangeError:
+        print ("FlowExchangeError")
         response = make_response(
             json.dumps('Failed to upgrade the authorization code.'), 401)
         response.headers['Content-Type'] = 'application/json'
@@ -127,7 +128,7 @@ def gconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    stored_access_token = getUserID.get('access_token')
+    stored_access_token = getUserID('access_token')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_access_token is not None and gplus_id == stored_gplus_id:
         response = make_response(json.dumps('Current user is already connected.'),
@@ -160,9 +161,6 @@ def gconnect():
     output += '<h1>Welcome, '
     output += login_session['username']
     output += '!</h1>'
-    output += '<img src="'
-    output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
     flash("you are now logged in as %s" % login_session['username'])
     print ("done!")
     return output
@@ -200,79 +198,10 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
-@app.route('/fbconnect', methods=['POST'])
-def fbconnect():
-    if request.args.get('state') != login_session['state']:
-        response = make_response(json.dumps('Invalid state parameter.'), 401)
-        response.headers['Content-Type'] = 'application/json'
-        return response
-    access_token = request.data
-    print ("access token received %s " % access_token)
-    app_id = json.loads(open('fb_client_secrets.json', 'r').read())[
-        'web']['app_id']
-    app_secret = json.loads(
-        open('fb_client_secrets.json', 'r').read())['web']['app_secret']
-    url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (
-        app_id, app_secret, access_token)
-    h = httplib2.Http()
-    result = h.request(url, 'GET')[1]
-    # Use token to get user info from API
-    userinfo_url = "https://graph.facebook.com/v2.8/me"
-    '''
-        Due to the formatting for the result from the server token exchange we have to
-        split the token first on commas and select the first index which gives us the key : value
-        for the server access token then we split it on colons to pull out the actual token value
-        and replace the remaining quotes with nothing so that it can be used directly in the graph
-        api calls
-    '''
-    token = result.split(',')[0].split(':')[1].replace('"', '')
-    url = 'https://graph.facebook.com/v2.8/me?access_token=%s&fields=name,id,email' % token
-    h = httplib2.Http()
-    result = h.request(url, 'GET')[1]
-    # print "url sent for API access:%s"% url
-    # print "API JSON result: %s" % result
-    data = json.loads(result)
-    login_session['provider'] = 'facebook'
-    login_session['username'] = data["name"]
-    login_session['email'] = data["email"]
-    login_session['facebook_id'] = data["id"]
-    # The token must be stored in the login_session in order to properly logout
-    login_session['access_token'] = token
-    # Get user picture
-    url = 'https://graph.facebook.com/v2.8/me/picture?access_token=%s&redirect=0&height=200&width=200' % token
-    h = httplib2.Http()
-    result = h.request(url, 'GET')[1]
-    data = json.loads(result)
-    login_session['picture'] = data["data"]["url"]
-    # see if user exists
-    user_id = getUserID(login_session['email'])
-    if not user_id:
-        user_id = createUser(login_session)
-    login_session['user_id'] = user_id
-    output = ''
-    output += '<h1>Welcome, '
-    output += login_session['username']
-    output += '!</h1>'
-    output += '<img src="'
-    output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
-    flash("Now logged in as %s" % login_session['username'])
-    return output
-@app.route('/fbdisconnect')
-def fbdisconnect():
-    facebook_id = login_session['facebook_id']
-    # The access token must me included to successfully logout
-    access_token = login_session['access_token']
-    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (facebook_id,access_token)
-    h = httplib2.Http()
-    result = h.request(url, 'DELETE')[1]
-    return "you have been logged out"
-
-
 # JSON APIs to view School Information
 @app.route('/school/<int:school_id>/spell/JSON')
 def schoolMenuJSON(school_id):
-    school = session.query(School).filter_by(id=school_id).one()
+    school = session.query(School).filter_by(name=school_id).one()
     items = session.query(Spell).filter_by(
         school_id=school_id).all()
     return jsonify(Spells=[i.serialize for i in items])
@@ -280,7 +209,7 @@ def schoolMenuJSON(school_id):
 
 @app.route('/school/<int:school_id>/spell/<int:spell_id>/JSON')
 def spellJSON(school_id, spell_id):
-    spell = session.query(Spell).filter_by(id=spell_id).one()
+    spell = session.query(Spell).filter_by(name=spell_id).one()
     return jsonify(spell=spell.serialize)
 
 
@@ -301,24 +230,29 @@ def showSchools():
 # Show a spell
 
 
-@app.route('/school/<int:school_id>/')
-@app.route('/school/<int:school_id>/spell/')
+@app.route('/school/<school_id>/')
+@app.route('/school/<school_id>/spell/')
 def showSpell(school_id):
-    school = session.query(School).filter_by(id=school_id).one()
-    spells = session.query(Spell).filter_by(
-        school_id=school_id).all()
-    return render_template('spells.html', spells=spells, school=school, school_id=school_id)
+    school = session.query(School).filter_by(name=school_id).all()
+    spells = session.query(Spell).filter_by(school_id=school_id).all()
+    return render_template('spells.html', spells=spells, spell_id=Spell.school_id, school=school, school_id=School.name)
 
+@app.route('/school/<school_id>/spell/<spell_id>')
+def specSpell(school_id, spell_id):
+    spells = session.query(Spell).filter_by(name=spell_id).all()
+    school = session.query(School).filter_by(name=school_id).all()
+    return render_template('specSpell.html', spell_id=Spell.name, school_id=Spell.school_id, spells=spells, school=school)
 
 # Create a new spell
-@app.route('/school/<int:school_id>/spell/new/', methods=['GET', 'POST'])
+
+@app.route('/school/<school_id>/spell/new/', methods=['GET', 'POST'])
 def newSpell(school_id):
     if 'username' not in login_session:
-            return redirect('/login')
-    school = session.query(School).filter_by(id=school_id).one()
+        return redirect('/login')
+    school = session.query(School).filter_by(name=school_id).one()
     if request.method == 'POST':
         newItem = Spell(name=request.form['name'], description=request.form[
-                           'description'], school_id=school_id)
+                           'description'], user_id=login_session['user_id'], school_id=school_id)
         session.add(newItem)
         session.commit()
         flash('New Spell: %s Successfully Created' % (newItem.name))
@@ -329,12 +263,12 @@ def newSpell(school_id):
 # Edit a spell
 
 
-@app.route('/school/<int:school_id>/spell/<int:spell_id>/edit', methods=['GET', 'POST'])
+@app.route('/school/<school_id>/spell/<spell_id>/edit/', methods=['GET', 'POST'])
 def editSpell(school_id, spell_id):
     if 'username' not in login_session:
             return redirect('/login')
-    editedItem = session.query(Spell).filter_by(id=spell_id).one()
-    school = session.query(School).filter_by(id=school_id).one()
+    editedItem = session.query(Spell).filter_by(name=spell_id).one()
+    school = session.query(School).filter_by(name=school_id).one()
     if request.method == 'POST':
         if request.form['name']:
             editedItem.name = request.form['name']
@@ -345,16 +279,16 @@ def editSpell(school_id, spell_id):
         flash('Spell Successfully Edited')
         return redirect(url_for('showSpell', school_id=school_id))
     else:
-        return render_template('editspell.html', school_id=school_id, spell_id=spell_id, item=editedItem)
+        return render_template('editspell.html', school_id=school.name, spell_id=spell.name, item=editedItem)
 
 
 # Delete a spell
-@app.route('/school/<int:school_id>/spell/<int:spell_id>/delete', methods=['GET', 'POST'])
+@app.route('/school/<school_id>/spell/<spell_id>/delete', methods=['GET', 'POST'])
 def deleteSpell(school_id, spell_id):
     if 'username' not in login_session:
             return redirect('/login')
-    school = session.query(School).filter_by(id=school_id).one()
-    itemToDelete = session.query(Spell).filter_by(id=spell_id).one()
+    school = session.query(School).filter_by(name=school_id).one()
+    itemToDelete = session.query(Spell).filter_by(name=spell_id).one()
     if request.method == 'POST':
         session.delete(itemToDelete)
         session.commit()
