@@ -40,10 +40,15 @@ session = DBSession()
 # for school in schools:
 #     print(school.name, school.id)
 
-spells = session.query(Spell).filter_by(school_id=Abjuration).all()
+spells = session.query(Spell).filter_by(school_id="Abjuration").all()
 
 for spell in spells:
      print(spell.id, spell.name, spell.description)
+
+# deleteSpell = session.query(Spell).filter_by(id=1).one()
+#
+# session.delete(deleteSpell)
+# session.commit()
 
 # Spell1 = School(id = 2, name = "Evocation", description = "Spells that manipulate energy or create something from nothing. ", user_id = 1)
 #

@@ -1,12 +1,25 @@
 {% extends "main.html" %}
 {% block content %}
 {% include "header.html" %}
+	<div class="container-fluid" align="center">
 
-<html>
 
-<head>
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
-	</head>
+
+
+	<div class = 'flash'>
+		      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+
+        <ul>
+        {% for message in messages %}
+            <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+
+</div>
+
 <body>
 
 <h1>New Spell</h1>
@@ -18,10 +31,6 @@
 		<input type ='text' size='30' name='name'>
 	<p>Description:</p>
 		<input type ='text' size='30' name='description'>
-	<!-- <p>School:</p>
-		<input type ='radio'  name='school' value ='Abjuration'>Abjuration</br>
-		<input type ='radio'  name='school' value ='Conjuration'>Conjuration</br>
-		<input type ='radio'  name='school' value ='Evocation'>Evocation</br> -->
 	</br>
 
 
@@ -30,5 +39,5 @@
 </form>
 
 </body>
-</html>
+
 {% endblock %}

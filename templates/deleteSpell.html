@@ -1,14 +1,28 @@
 {% extends "main.html" %}
 {% block content %}
 {% include "header.html" %}
+	<div class="container-fluid" align="center">
 
-<html>
-<head>
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
-	</head>
+
+
+
+	<div class = 'flash'>
+		      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+
+        <ul>
+        {% for message in messages %}
+            <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+
+</div>
 
 <body>
-<h1> Are you sure you want to delete {{equipment.name}}? </h1>
+	{% for spell in spells %}
+<h1> Are you sure you want to delete {{spell.name}}? </h1>
 
 <form action="#" method = 'post'>
 
@@ -19,7 +33,9 @@
 
 </form>
 
-<a href = '{{url_for('showItems')}}'> Cancel </a>
+
 </body>
 
-</html>
+
+{% endfor %}
+{% endblock %}

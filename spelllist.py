@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, School, Spell, User
@@ -240,8 +239,8 @@ def showSpell(school_id):
 @app.route('/school/<school_id>/spell/<spell_id>')
 def specSpell(school_id, spell_id):
     spells = session.query(Spell).filter_by(name=spell_id).all()
-    school = session.query(School).filter_by(name=school_id).all()
-    return render_template('specSpell.html', spell_id=Spell.name, school_id=Spell.school_id, spells=spells, school=school)
+    schools = session.query(School).filter_by(name=school_id).all()
+    return render_template('specSpell.html', spells=spells, spell_id=Spell.name, schools=schools, school_id=School.name)
 
 # Create a new spell
 
@@ -249,7 +248,7 @@ def specSpell(school_id, spell_id):
 def newSpell(school_id):
     if 'username' not in login_session:
         return redirect('/login')
-    school = session.query(School).filter_by(name=school_id).one()
+    school = session.query(School).filter_by(name=school_id).all()
     if request.method == 'POST':
         newItem = Spell(name=request.form['name'], description=request.form[
                            'description'], user_id=login_session['user_id'], school_id=school_id)
@@ -258,7 +257,7 @@ def newSpell(school_id):
         flash('New Spell: %s Successfully Created' % (newItem.name))
         return redirect(url_for('showSpell', school_id=school_id))
     else:
-        return render_template('newspell.html', school_id=school_id)
+        return render_template('newspell.html', school_id=School.name, school=school)
 
 # Edit a spell
 
@@ -267,19 +266,20 @@ def newSpell(school_id):
 def editSpell(school_id, spell_id):
     if 'username' not in login_session:
             return redirect('/login')
-    editedItem = session.query(Spell).filter_by(name=spell_id).one()
+    spells = session.query(Spell).filter_by(name=spell_id).all()
+    editedSpell = session.query(Spell).filter_by(name=spell_id).all()
     school = session.query(School).filter_by(name=school_id).one()
     if request.method == 'POST':
-        if request.form['name']:
-            editedItem.name = request.form['name']
-        if request.form['description']:
-            editedItem.description = request.form['description']
-        session.add(editedItem)
+        if not request.form['description']:
+            flash('Please add a description')
+            return redirect(url_for('specSpell', spell_id=Spell.name, school_id=Spell.school_id, spells=spells, school=school))
+        editedSpell = Spell(description = request.form['description'])
+        session.add(editedSpell)
         session.commit()
         flash('Spell Successfully Edited')
         return redirect(url_for('showSpell', school_id=school_id))
     else:
-        return render_template('editspell.html', school_id=school.name, spell_id=spell.name, item=editedItem)
+        return render_template('editSpell.html', spell_id=Spell.name, school_id=Spell.school_id, spells=spells, school=school)
 
 
 # Delete a spell
@@ -287,15 +287,16 @@ def editSpell(school_id, spell_id):
 def deleteSpell(school_id, spell_id):
     if 'username' not in login_session:
             return redirect('/login')
+    spells = session.query(Spell).filter_by(name=spell_id).all()
+    deleteSpell = session.query(Spell).filter_by(name=spell_id).one()
     school = session.query(School).filter_by(name=school_id).one()
-    itemToDelete = session.query(Spell).filter_by(name=spell_id).one()
     if request.method == 'POST':
-        session.delete(itemToDelete)
+        session.delete(deleteSpell)
         session.commit()
         flash('Spell Successfully Deleted')
         return redirect(url_for('showSpell', school_id=school_id))
     else:
-        return render_template('deleteSpell.html', item=itemToDelete)
+        return render_template('deleteSpell.html', spell=deleteSpell, school_id=School.name, spell_id=Spell.name, spells=spells, school=school)
 
 
 if __name__ == '__main__':

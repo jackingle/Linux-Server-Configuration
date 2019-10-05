@@ -2,10 +2,19 @@ body {
     font-family: sans-serif; background-color: black
 }
 
-#header {
-    background-color: red
+a {
+    text-decoration: none;
 }
 
+#header {
+    background-color: red;
+    background-image: url('dice.jpg');
+    background-size: cover;
+    background-position: center;
+}
+#header a {
+    color:white;
+}
 #left {
     text-align: left;
 }
@@ -14,9 +23,7 @@ body {
     color:white;
 }
 
-a {
-    text-decoration: none;
-}
+
 
 .jumbotron {
      background-image:url('school.jpg');

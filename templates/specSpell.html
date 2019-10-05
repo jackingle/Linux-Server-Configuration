@@ -24,23 +24,26 @@
 
 
 
-<div class="row padding-top padding-bottom">
+<div class="row">
 
 
 {% for spell in spells %}
 
-    <a href = "{{url_for('specSpell', spell_id = spell.name, school_id = school_id)}}">
+    <a href = "{{url_for('specSpell', spell_id=spell.name, school_id=spell.school_id)}}">
 
-        <div class="row-fluid" align="left">
+
             <h3>{{ spell.name }}</h3></a>
-        </div>
+
         <p id="left">{{ spell.description }} </p>
-    <a href = "{{url_for('editSpell', spell_id = spell.name, school_id = school.name)}}">
-            <h5>Edit</h5></a><p>/</p>
-	<a href = "{{url_for('deleteSpell', spell_id = spell.name, school_id = school.name)}}">
+		"Add login to hide Edit/Delete if not logged in"
+		<div align="left">
+<a href = "{{url_for('editSpell', spell_id=spell.name, school_id=spell.school_id)}}">Edit </a>
+/
+<a href = "{{url_for('deleteSpell', spell_id=spell.name, school_id=spell.school_id)}}">Delete</a>
+
+</div>
 
 
-        </div>
         </div>
 
 {% endfor %}

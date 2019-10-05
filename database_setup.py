@@ -18,7 +18,7 @@ class School(Base):
     __tablename__ = 'school'
 
     id = Column(Integer)
-    name = Column(String(250), primary_key=True)
+    name = Column(String(250), primary_key=True, unique=True)
     description = Column(String(250))
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
