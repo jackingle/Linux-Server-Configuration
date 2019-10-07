@@ -13,8 +13,8 @@ import json
 from flask import make_response
 import requests
 """
-Throughout the code app.route() decorator appears which binds functions to a URL.
-When the URL is accessed, the function runs.
+Throughout the code app.route() decorator appears which binds functions to a
+URL.  When the URL is accessed, the function runs.
 """
 
 """
@@ -28,8 +28,9 @@ CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Item Catalog"
 """
-The code block below creates an engine tied to the database and binds a mapper to 
-sessions.  The ?check_same_thread=False option helps limit the reuse of threads.
+The code block below creates an engine tied to the database and binds a mapper
+to sessions.  The ?check_same_thread=False option helps limit the reuse of
+threads.
 """
 engine = create_engine('sqlite:///spell.db?check_same_thread=False')
 Base.metadata.bind = engine
@@ -38,10 +39,12 @@ session = DBSession()
 
 
 """
-The functions below create an instance of the User class and then pass data gained
-through OAuth2 from google in the login_session object. This instance is committed
-to the database in order to track the client-side user. 
+The functions below create an instance of the User class and then pass data
+gainedthrough OAuth2 from google in the login_session object. This instance is
+committed to the database in order to track the client-side user.
 """
+
+
 def createUser(login_session):
     newUser = User(name=login_session['username'], email=login_session[
                    'email'], picture=login_session['picture'])
@@ -68,10 +71,12 @@ def getUserID(email):
 The function below handles the anti-forgery 'state' token which validates
 that a user is who they say they are.
 """
+
+
 @app.route('/login')
 def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
-        for x in range(32))
+                    for x in range(32))
     login_session['state'] = state
     print ("help"+login_session['state'])
     # return "The current session state is %s" % login_session['state']
@@ -82,15 +87,18 @@ def showLogin():
 The function below validates the token, allowing a user to use OAuth2 as
 a sign-in method, currently the only sign in method for the
 """
+
+
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
-if request.args.get('state') != login_session['state']:
+    if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
 code = request.data
 """
-This passes the authorization code into a credentials object if the validation passes.
+This passes the authorization code into a credentials object if the validation
+passes.
 """
 try:
         oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
@@ -107,8 +115,9 @@ except FlowExchangeError:
 Retrieves and checks the access token.
 """
 access_token = credentials.access_token
-url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
-        % access_token)
+url = (
+    'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
+    % access_token)
 h = httplib2.Http()
 result = json.loads(h.request(url, 'GET')[1].decode('utf-8'))
 if result.get('error') is not None:
@@ -157,8 +166,9 @@ login_session['provider'] = 'google'
 
 
 """
-Now that the OAuth has passed and data has been stored in the login_session object, 
-pass that data into the getUserID function and verify the user is made or create one.
+Now that the OAuth has passed and data has been stored in the login_session
+object, pass that data into the getUserID function and verify the user is made
+or create one.
 Finally, flash a quick login screen.
 """
 user_id = getUserID(data["email"])
@@ -175,8 +185,11 @@ return output
 
 
 """
-This function allows the user to disconnect from google and revokes the access token.
+This function allows the user to disconnect from google and revokes the
+access token.
 """
+
+
 @app.route('/gdisconnect')
 def gdisconnect():
     access_token = login_session.get('access_token')
@@ -215,6 +228,8 @@ def gdisconnect():
 """
 These functions provide JSON endpoints.
 """
+
+
 @app.route('/school/<int:school_id>/spell/JSON')
 def schoolMenuJSON(school_id):
     school = session.query(School).filter_by(name=school_id).one()
@@ -236,9 +251,12 @@ def schoolsJSON():
 
 
 """
-This function creates a session that queries the school database for all the results arranged by name.
-This is utilized by Jinja2 to populate the site with table data.
+This function creates a session that queries the school database for all the
+results arranged by name. This is utilized by Jinja2 to populate the site with
+table data.
 """
+
+
 @app.route('/')
 @app.route('/school/')
 def showSchools():
@@ -249,9 +267,11 @@ def showSchools():
 
 
 """
-This function provides sessions that query the school and spell databases for all data allowing
-them to be used by Jinja2.
+This function provides sessions that query the school and spell databases for
+all data allowing them to be used by Jinja2.
 """
+
+
 @app.route('/school/<school_id>/')
 @app.route('/school/<school_id>/spell/')
 def showSpell(school_id):
@@ -268,6 +288,8 @@ def showSpell(school_id):
 """
 This function is for the specSpell page where specific spells are viewed.
 """
+
+
 @app.route(
     '/school/<school_id>/spell/<spell_id>')
 def specSpell(school_id, spell_id):
@@ -285,6 +307,8 @@ def specSpell(school_id, spell_id):
 This function uses a session to create a new spell based on user inputs passed
 through a form on the webpage.
 """
+
+
 @app.route(
     '/school/<school_id>/spell/new/',
     methods=['GET', 'POST'])
@@ -312,9 +336,11 @@ def newSpell(school_id):
 
 
 """
-This function allows a user to edit the description of a spell which is the only field you
-can edit presently.
+This function allows a user to edit the description of a spell which is the
+only field you can edit presently.
 """
+
+
 @app.route(
     '/school/<school_id>/spell/<spell_id>/edit/',
     methods=['GET', 'POST'])
@@ -352,6 +378,8 @@ def editSpell(school_id, spell_id):
 """
 This function allows a user to delete a spell.
 """
+
+
 @app.route(
     '/school/<school_id>/spell/<spell_id>/delete',
     methods=['GET', 'POST'])
