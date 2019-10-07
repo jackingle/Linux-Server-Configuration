@@ -12,21 +12,36 @@ import httplib2
 import json
 from flask import make_response
 import requests
+"""
+Throughout the code app.route() decorator appears which binds functions to a URL.
+When the URL is accessed, the function runs.
+"""
 
+"""
+This makes an object of the Flask class.
+"""
 app = Flask(__name__)
-
+"""
+This loads a json with oauth2 related information for google.
+"""
 CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Item Catalog"
-
-# Connect to Database and create database session
+"""
+The code block below creates an engine tied to the database and binds a mapper to 
+sessions.  The ?check_same_thread=False option helps limit the reuse of threads.
+"""
 engine = create_engine('sqlite:///spell.db?check_same_thread=False')
 Base.metadata.bind = engine
-
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
+"""
+The functions below create an instance of the User class and then pass data gained
+through OAuth2 from google in the login_session object. This instance is committed
+to the database in order to track the client-side user. 
+"""
 def createUser(login_session):
     newUser = User(name=login_session['username'], email=login_session[
                    'email'], picture=login_session['picture'])
@@ -48,7 +63,11 @@ def getUserID(email):
     except:
         return None
 
-# Create anti-forgery state token
+
+"""
+The function below handles the anti-forgery 'state' token which validates
+that a user is who they say they are.
+"""
 @app.route('/login')
 def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
@@ -59,20 +78,21 @@ def showLogin():
     return render_template('login.html', STATE=state)
 
 
+"""
+The function below validates the token, allowing a user to use OAuth2 as
+a sign-in method, currently the only sign in method for the
+"""
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
-'#'Validate state token
-print ("Hey")
-print (login_session['state'])
-print(request.args.get('state'))
 if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
 code = request.data
-
+"""
+This passes the authorization code into a credentials object if the validation passes.
+"""
 try:
-        # Upgrade the authorization code into a credentials object
         oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
         oauth_flow.redirect_uri = 'http://localhost:8000'
         credentials = oauth_flow.step2_exchange(code)
@@ -83,28 +103,31 @@ except FlowExchangeError:
             json.dumps('Failed to upgrade the authorization code.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-
-# Check that the access token is valid.
+"""
+Retrieves and checks the access token.
+"""
 access_token = credentials.access_token
 url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
         % access_token)
 h = httplib2.Http()
 result = json.loads(h.request(url, 'GET')[1].decode('utf-8'))
-# If there was an error in the access token info, abort.
 if result.get('error') is not None:
         response = make_response(json.dumps(result.get('error')), 500)
         response.headers['Content-Type'] = 'application/json'
         return response
-
-    # Verify that the access token is used for the intended user.
+"""
+Matches the google verified user to the token in order to ensure they're the
+same person.
+"""
 gplus_id = credentials.id_token['sub']
 if result['user_id'] != gplus_id:
         response = make_response(
             json.dumps("Token's user ID doesn't match given user ID."), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-
-    # Verify that the access token is valid for this app.
+"""
+This verifies that the app is the correct app for OAuth2.
+"""
 if result['issued_to'] != CLIENT_ID:
         response = make_response(
             json.dumps("Token's client ID does not match app's."), 401)
@@ -121,23 +144,23 @@ if stored_access_token is not None and gplus_id == stored_gplus_id:
         response.headers['Content-Type'] = 'application/json'
         return response
 
-# Store the access token in the session for later use.
 login_session['access_token'] = credentials.access_token
 login_session['gplus_id'] = gplus_id
-
-# Get user info
 userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
 params = {'access_token': credentials.access_token, 'alt': 'json'}
 answer = requests.get(userinfo_url, params=params)
-
 data = answer.json()
-
 login_session['username'] = data['name']
 login_session['picture'] = data['picture']
 login_session['email'] = data['email']
-# ADD PROVIDER TO LOGIN SESSION
 login_session['provider'] = 'google'
-# see if user exists, if it doesn't make a new one
+
+
+"""
+Now that the OAuth has passed and data has been stored in the login_session object, 
+pass that data into the getUserID function and verify the user is made or create one.
+Finally, flash a quick login screen.
+"""
 user_id = getUserID(data["email"])
 if not user_id:
         user_id = createUser(login_session)
@@ -150,9 +173,10 @@ flash("you are now logged in as %s" % login_session['username'])
 print ("done!")
 return output
 
-# DISCONNECT - Revoke a current user's token and reset their login_session
 
-
+"""
+This function allows the user to disconnect from google and revokes the access token.
+"""
 @app.route('/gdisconnect')
 def gdisconnect():
     access_token = login_session.get('access_token')
@@ -188,7 +212,9 @@ def gdisconnect():
         return response
 
 
-# JSON APIs to view School Information
+"""
+These functions provide JSON endpoints.
+"""
 @app.route('/school/<int:school_id>/spell/JSON')
 def schoolMenuJSON(school_id):
     school = session.query(School).filter_by(name=school_id).one()
@@ -209,7 +235,10 @@ def schoolsJSON():
     return jsonify(schools=[r.serialize for r in schools])
 
 
-# Show all schools
+"""
+This function creates a session that queries the school database for all the results arranged by name.
+This is utilized by Jinja2 to populate the site with table data.
+"""
 @app.route('/')
 @app.route('/school/')
 def showSchools():
@@ -219,9 +248,10 @@ def showSchools():
         schools=schools)
 
 
-# Show a spell
-
-
+"""
+This function provides sessions that query the school and spell databases for all data allowing
+them to be used by Jinja2.
+"""
 @app.route('/school/<school_id>/')
 @app.route('/school/<school_id>/spell/')
 def showSpell(school_id):
@@ -235,6 +265,9 @@ def showSpell(school_id):
         school_id=School.name)
 
 
+"""
+This function is for the specSpell page where specific spells are viewed.
+"""
 @app.route(
     '/school/<school_id>/spell/<spell_id>')
 def specSpell(school_id, spell_id):
@@ -246,9 +279,12 @@ def specSpell(school_id, spell_id):
         spell_id=Spell.name,
         schools=schools,
         school_id=School.name)
-# Create a new spell
 
 
+"""
+This function uses a session to create a new spell based on user inputs passed
+through a form on the webpage.
+"""
 @app.route(
     '/school/<school_id>/spell/new/',
     methods=['GET', 'POST'])
@@ -274,9 +310,11 @@ def newSpell(school_id):
             school_id=School.name,
             school=school)
 
-# Edit a spell
 
-
+"""
+This function allows a user to edit the description of a spell which is the only field you
+can edit presently.
+"""
 @app.route(
     '/school/<school_id>/spell/<spell_id>/edit/',
     methods=['GET', 'POST'])
@@ -311,7 +349,9 @@ def editSpell(school_id, spell_id):
             school=school)
 
 
-# Delete a spell
+"""
+This function allows a user to delete a spell.
+"""
 @app.route(
     '/school/<school_id>/spell/<spell_id>/delete',
     methods=['GET', 'POST'])
@@ -338,6 +378,9 @@ def deleteSpell(school_id, spell_id):
             school=school)
 
 
+"""
+This runs the program in debug mode at http://localhost:8000.
+"""
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True

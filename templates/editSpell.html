@@ -1,22 +1,20 @@
 {% extends "main.html" %}
 {% block content %}
 {% include "header.html" %}
-	<div class="container-fluid" align="center">
+<div class="container-fluid" align="center">
 
 
+<div class = 'flash'>
+	      {% with messages = get_flashed_messages() %}
+  {% if messages %}
 
-
-	<div class = 'flash'>
-		      {% with messages = get_flashed_messages() %}
-      {% if messages %}
-
-        <ul>
-        {% for message in messages %}
-            <li> <strong> {{ message }} </strong> </li>
-        {% endfor %}
-        </ul>
-        {% endif %}
-    {% endwith %}
+    <ul>
+    {% for message in messages %}
+        <li> <strong> {{ message }} </strong> </li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+	{% endwith %}
 
 </div>
 
@@ -24,19 +22,12 @@
 	{% for spell in spells %}
 	<h1> Edit {{spell.name}} </h1>
 
-
 <form action="#" method = 'post'>
-
-
 
 	<p>Description:</p>
 		<input type ='text' size='30' name='description' placeholder = '{{spell.description}}'>
 
-
-
-
 <input type='submit' value='Edit'>
-
 
 <a href = '{{url_for('showSpell', school_id = school_id)}}'> Cancel </a>
 

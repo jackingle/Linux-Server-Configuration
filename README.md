@@ -1,10 +1,17 @@
 # Introduction
 
-This project is in development for Udacity.  It consists of an Item Catalog including a front end website with user authentication through OAuth2 and a back end database.  Properly logged in users may edit information in the database utilizing REST API.
+This project is in development for Udacity.  It consists of an Item Catalog
+including a front end website with user authentication through OAuth2 and a
+back end database.  Properly logged in users may edit information in the
+database utilizing REST API.
+
 
 # The Database
 
-The database contains spells that you might find in a traditional RPG(Role Playing Game).  Three tables within the database include Users, School, and Spell.  Spells in RPGs are often split into Schools of Magic.  
+The database contains spells that you might find in a traditional
+RPG(Role Playing Game).  Three tables within the database include Users, School,
+and Spell.  Spells in RPGs are often split into Schools of Magic.  
+
 
 ## Installation
 
@@ -30,15 +37,47 @@ vagrant up
 vagrant ssh
 ```
 
+
+### Import required modules
+
+Depending on whether you would like to utilize python2 or python3, use pip or pip3 respectively.  It might be necessary in some cases to add sudo to the beginning of these install statements and append "--user"
+
+```
+pip3 install flask
+pip3 install sqlalchemy
+pip3 install oauth2client
+pip3 install requests
+```
+
+
+### Run the database setup file
+
+Initialize the database by running the code below.  This will generate the
+database and populate it with a few spells.  I will add more categories soon.
+```
+python3 database_setup.py
+python3 populate.py
+```
+
+
 ### Run the server file
 
-Place the file spelllist.py in the shared folder for the virtual machine. The example
+Place the files in the repository in the shared folder for the virtual machine.
+The example
 code below shows python3 being used but this program will work in python2 as
 well.
 ```
 python3 spelllist.py
 ```
 
+
 ### Access the website locally
 
 The URL for the program is set to work only at http://localhost:8000
+
+
+### Known issues
+
+Currently when editing a spell, a duplicate is created instead of an update
+performed.
+Any user may edit the catalog once they are logged in.

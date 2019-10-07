@@ -1,12 +1,10 @@
 {% extends "main.html" %}
 {% block content %}
 {% include "header.html" %}
-	<div class="container-fluid" align="center">
+<div class="container-fluid" align="center">
 
 
-
-
-	<div class = 'flash'>
+<div class = 'flash'>
 		      {% with messages = get_flashed_messages() %}
       {% if messages %}
 
@@ -23,8 +21,7 @@
 	<div class="jumbotron text-center" align="center">
 		 <h1>Schools of Magic</h1>
 		 <p id="jumbo">Spells divided according to specialization!</p>
-	   </div>
-
+	</div>
 
 
 	<div class="row padding-top padding-bottom">
@@ -32,14 +29,14 @@
 	{% for school in schools %}
 		<a href = "{{url_for('showSpell', school_id = school.name)}}">
 
-			<div class="row-fluid" align="left">
-						<h3>{{school.name}}</h3>
-						</div>
+		<div class="row-fluid" align="left">
+			<h3>{{school.name}}</h3></a>
+		</div>
 
 
 
-			</div>
-			</div>
-		</a>
-	{% endfor %}
+</div>
+
+
+{% endfor %}
 {% endblock %}

@@ -1,12 +1,10 @@
 {% extends "main.html" %}
 {% block content %}
 {% include "header.html" %}
-	<div class="container-fluid" align="center">
+<div class="container-fluid" align="center">
 
 
-
-
-	<div class = 'flash'>
+<div class = 'flash'>
 		      {% with messages = get_flashed_messages() %}
       {% if messages %}
 
@@ -27,11 +25,11 @@
 <form action="#" method = 'post'>
 
 
-	<p>Name:</p>
-		<input type ='text' size='30' name='name'>
-	<p>Description:</p>
-		<input type ='text' size='30' name='description'>
-	</br>
+<p>Name:</p>
+	<input type ='text' size='30' name='name'>
+<p>Description:</p>
+	<input type ='text' size='30' name='description'>
+</br>
 
 
 <input type='submit' value='Create'>

@@ -1,23 +1,33 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-
-from database_setup import Base, Spell, School, User
-
+from database_setup import Base, School, Spell, User
+"""
+This creates an engine attached to the database.
+"""
 engine = create_engine('sqlite:///spell.db')
-# Bind the engine to the metadata of the Base class so that the
-# declaratives can be accessed through a DBSession instance
+"""
+Bind the engine to the metadata of the Base class so that the declaratives
+can be accessed through a DBSession instance.
+"""
 Base.metadata.bind = engine
-
+"""
+Create an instance of the instance that can handle sessions.
+"""
 DBSession = sessionmaker(bind=engine)
-# A DBSession() instance establishes all conversations with the database
-# and represents a "staging zone" for all the objects loaded into the
-# database session object. Any change made against the objects in the
-# session won't be persisted into the database until you call
-# session.commit(). If you're not happy about the changes, you can
-# revert all of them back to the last commit by calling
-# session.rollback()
+"""
+A DBSession() instance establishes all conversations with the database
+and represents a "staging zone" for all the objects loaded into the
+database session object. Any change made against the objects in the
+session won't be persisted into the database until you call
+session.commit(). If you're not happy about the changes, you can
+revert all of them back to the last commit by calling
+session.rollback().
+"""
 session = DBSession()
-
+"""
+This program works to debug query and SQLAlchemy issues.  Simply uncomment
+and replace relevant data where necessary.
+"""
 # q =  session.query(School).all()
 #
 # for School in q:
@@ -40,10 +50,10 @@ session = DBSession()
 # for school in schools:
 #     print(school.name, school.id)
 
-spells = session.query(Spell).filter_by(school_id="Abjuration").all()
-
-for spell in spells:
-     print(spell.id, spell.name, spell.description)
+# spells = session.query(Spell).filter_by(school_id="Abjuration").all()
+#
+# for spell in spells:
+#      print(spell.id, spell.name, spell.description)
 
 # deleteSpell = session.query(Spell).filter_by(id=1).one()
 #
