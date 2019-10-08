@@ -51,7 +51,7 @@ class Spell(Base):
     description = Column(String(250))
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
-    school_id = Column(String(250), ForeignKey('school.name'))
+    school_id = Column(String(250), ForeignKey('school.name'), nullable=False)
 
     @property
     def serialize(self):

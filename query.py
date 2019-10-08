@@ -33,10 +33,24 @@ and replace relevant data where necessary.
 # for School in q:
 #     print (School.name, School.id)
 #
-# items = session.query(Spell).all()
-# for Spell in items:
-#         print (Spell.school_id, Spell.name, Spell.user_id)
+# spells = session.query(Spell).all()
+# spells = session.query(Spell).all()
 
+# for Spell in spells:
+#         print (Spell.school_id, Spell.name, Spell.description, Spell.id)
+
+# alarm = session.query(Spell).filter_by(
+#     name="Update").update(
+#         {Spell.description:"anything"}, synchronize_session = False)
+# # print(alarm)
+# # alarm.description = "Anything"
+# # print(alarm[0])
+# session.commit()
+spells = session.query(Spell).all()
+
+for Spell in spells:
+        print (Spell.school_id, Spell.name, Spell.description, Spell.id)
+# session.query(Spell).get()
 # usr = session.query(User).all()
 #
 # for User in usr:

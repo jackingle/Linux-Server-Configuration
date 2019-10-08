@@ -214,7 +214,7 @@ def gdisconnect():
         return response
     else:
         response = make_response(json.dumps(
-            'Failed to revoke token for given user.', 400))
+            'Failed to revoke token for given user.'), 400)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -224,15 +224,14 @@ These functions provide JSON endpoints.
 """
 
 
-@app.route('/school/<int:school_id>/spell/JSON')
+@app.route('/school/<school_id>/spell/JSON')
 def schoolMenuJSON(school_id):
-    school = session.query(School).filter_by(name=school_id).one()
     items = session.query(Spell).filter_by(
         school_id=school_id).all()
     return jsonify(Spells=[i.serialize for i in items])
 
 
-@app.route('/school/<int:school_id>/spell/<int:spell_id>/JSON')
+@app.route('/school/<school_id>/spell/<spell_id>/JSON')
 def spellJSON(school_id, spell_id):
     spell = session.query(Spell).filter_by(name=spell_id).one()
     return jsonify(spell=spell.serialize)
@@ -289,12 +288,14 @@ This function is for the specSpell page where specific spells are viewed.
 def specSpell(school_id, spell_id):
     spells = session.query(Spell).filter_by(name=spell_id).all()
     schools = session.query(School).filter_by(name=school_id).all()
+    school_id = School.name
+    spell_id = Spell.name
     return render_template(
         'specSpell.html',
         spells=spells,
-        spell_id=Spell.name,
+        spell_id=spell_id,
         schools=schools,
-        school_id=School.name)
+        school_id=school_id)
 
 
 """
@@ -342,8 +343,6 @@ def editSpell(school_id, spell_id):
     if 'username' not in login_session:
             return redirect('/login')
     spells = session.query(Spell).filter_by(name=spell_id).all()
-    editedSpell = session.query(Spell).filter_by(name=spell_id).all()
-    school = session.query(School).filter_by(name=school_id).one()
     if request.method == 'POST':
         if not request.form['description']:
             flash('Please add a description')
@@ -351,10 +350,11 @@ def editSpell(school_id, spell_id):
                 'specSpell',
                 spell_id=Spell.name,
                 school_id=Spell.school_id,
-                spells=spells,
-                school=school))
-        editedSpell = Spell(description=request.form['description'])
-        session.add(editedSpell)
+                spells=spells))
+        session.query(Spell).filter_by(
+            name=spell_id).update(
+            {Spell.description:request.form['description']},
+            synchronize_session = False)
         session.commit()
         flash('Spell Successfully Edited')
         return redirect(url_for(
@@ -365,8 +365,7 @@ def editSpell(school_id, spell_id):
             'editSpell.html',
             spell_id=Spell.name,
             school_id=Spell.school_id,
-            spells=spells,
-            school=school)
+            spells=spells)
 
 
 """
