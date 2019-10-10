@@ -37,7 +37,7 @@ and replace relevant data where necessary.
 # spells = session.query(Spell).all()
 
 # for Spell in spells:
-#         print (Spell.school_id, Spell.name, Spell.description, Spell.id)
+#         print (Spell.school_id, Spell.name, Spell.description, Spell.id, Spell.user_id)
 
 # alarm = session.query(Spell).filter_by(
 #     name="Update").update(
@@ -46,10 +46,15 @@ and replace relevant data where necessary.
 # # alarm.description = "Anything"
 # # print(alarm[0])
 # session.commit()
+
+x = session.query(User).filter_by(id="jaxon.chillforce@gmail.com").one()
+
+for User in x:
+        print (User.name, User.id, User.email)
 spells = session.query(Spell).all()
 
 for Spell in spells:
-        print (Spell.school_id, Spell.name, Spell.description, Spell.id)
+        print (Spell.school_id, Spell.name, Spell.description, Spell.id, Spell.user_id)
 # session.query(Spell).get()
 # usr = session.query(User).all()
 #

@@ -343,6 +343,13 @@ def editSpell(school_id, spell_id):
     if 'username' not in login_session:
             return redirect('/login')
     spells = session.query(Spell).filter_by(name=spell_id).all()
+    editedSpell = session.query(Spell).filter_by(name=spell_id).one()
+    creator = getUserInfo(editedSpell.user_id)
+    getUserInfo(login_session['user_id'])
+    if creator.id != login_session['user_id']:
+        flash (
+            "You cannot edit this Spell. This Spell was created by %s" % creator.name)
+        return redirect(url_for('showCatalog'))
     if request.method == 'POST':
         if not request.form['description']:
             flash('Please add a description')

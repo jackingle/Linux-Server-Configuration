@@ -6,7 +6,7 @@ back end database.  Properly logged in users may edit information in the
 database utilizing REST API.
 
 
-# The Database
+## The Database
 
 The database contains spells that you might find in a traditional
 RPG(Role Playing Game).  Three tables within the database include Users, School,
@@ -22,7 +22,9 @@ This project requires a virtual machine provided by Udacity and Python.
 - ViritualBox
 
 The necessary virtual machine can be found [at this link](https://github.com/udacity/fullstack-nanodegree-vm/blob/master/vagrant/Vagrantfile).
+
 Install Vagrant from [here](https://www.vagrantup.com/downloads.html).
+
 Install ViritualBox from [here](https://www.virtualbox.org/wiki/Download_Old_Builds_5_1).
 
 
@@ -31,7 +33,7 @@ Install ViritualBox from [here](https://www.virtualbox.org/wiki/Download_Old_Bui
 You will need some form of Unix shell in order to execute commands to log in to
 the virtual machine.  After you have installed the dependencies, use the
 following commands.  
-```
+``` console
 cd /vagrant/
 vagrant up
 vagrant ssh
@@ -40,9 +42,9 @@ vagrant ssh
 
 ### Import required modules
 
-Depending on whether you would like to utilize python2 or python3, use pip or pip3 respectively.  It might be necessary in some cases to add sudo to the beginning of these install statements and append "--user"
+Depending on whether you would like to utilize python2 or python3, use pip or pip3 respectively.  It might be necessary in some cases to add sudo to the beginning of these install statements and append `--user`
 
-```
+``` console
 pip3 install flask
 pip3 install sqlalchemy
 pip3 install oauth2client
@@ -54,7 +56,7 @@ pip3 install requests
 
 Initialize the database by running the code below.  This will generate the
 database and populate it with a few spells.  I will add more categories soon.
-```
+``` console
 python3 database_setup.py
 python3 populate.py
 ```
@@ -66,7 +68,7 @@ Place the files in the repository in the shared folder for the virtual machine.
 The example
 code below shows python3 being used but this program will work in python2 as
 well.
-```
+``` console
 python3 spelllist.py
 ```
 
@@ -76,8 +78,6 @@ python3 spelllist.py
 The URL for the program is set to work only at http://localhost:8000
 
 
-### Known issues
+## Known issues
 
-Currently when editing a spell, a duplicate is created instead of an update
-performed.
-Any user may edit the catalog once they are logged in.
+Create a new spell should only appear once on specSpell.html.
