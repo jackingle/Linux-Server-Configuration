@@ -47,14 +47,19 @@ and replace relevant data where necessary.
 # # print(alarm[0])
 # session.commit()
 
-x = session.query(User).filter_by(id="jaxon.chillforce@gmail.com").one()
+# x = session.query(User).filter_by(id="jaxon.chillforce@gmail.com").one()
 
-for User in x:
-        print (User.name, User.id, User.email)
+# for User in x:
+#         print (User.name, User.id, User.email)
 spells = session.query(Spell).all()
 
 for Spell in spells:
         print (Spell.school_id, Spell.name, Spell.description, Spell.id, Spell.user_id)
+
+session.query(Spell).all()
+for Spell in resultproxy:
+     u_as_dict = dict(Spell)
+
 # session.query(Spell).get()
 # usr = session.query(User).all()
 #
