@@ -102,7 +102,7 @@ def gconnect():
     try:
         # Upgrade the authorization code into a credentials object
         oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
-        oauth_flow.redirect_uri = 'http://18.223.189.177'
+        oauth_flow.redirect_uri = 'http://localhost:8000'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
         response = make_response(
@@ -407,9 +407,9 @@ def deleteSpell(school_id, spell_id):
 
 
 """
-This runs the program at 18.223.189.177:80
+This runs the program in debug mode at http://localhost:8000.
 """
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
-    app.debug = False
-    app.run(host='18.223.189.177', port=80)
+    app.debug = True
+    app.run(host='0.0.0.0', port=8000)
