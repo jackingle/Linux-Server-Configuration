@@ -24,15 +24,17 @@ app = Flask(__name__)
 """
 This loads a json with oauth2 related information for google.
 """
-CLIENT_ID = json.loads(
-    open('client_secrets.json', 'r').read())['web']['client_id']
+with app.open_resource('client_secrets.json') as f:
+    CLIENT_ID = json.load(f)['web']['client_id']
+#CLIENT_ID = json.loads(
+ #   open('client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Item Catalog"
 """
 The code block below creates an engine tied to the database and binds a mapper
 to sessions.  The ?check_same_thread=False option helps limit the reuse of
 threads.
 """
-engine = create_engine('sqlite:///spell.db?check_same_thread=False')
+engine = create_engine('postgresql://catalog:catalog@localhost/catalog')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
@@ -78,7 +80,6 @@ def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in range(32))
     login_session['state'] = state
-    print ("help"+login_session['state'])
     # return "The current session state is %s" % login_session['state']
     return render_template('login.html', STATE=state)
 
@@ -102,7 +103,7 @@ def gconnect():
     try:
         # Upgrade the authorization code into a credentials object
         oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
-        oauth_flow.redirect_uri = 'http://localhost:8000'
+        oauth_flow.redirect_uri = 'http://localhost:80'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
         response = make_response(
@@ -411,5 +412,4 @@ This runs the program in debug mode at http://localhost:8000.
 """
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
-    app.debug = True
-    app.run(host='0.0.0.0', port=8000)
+    app.run()

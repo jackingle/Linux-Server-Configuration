@@ -65,7 +65,7 @@ class Spell(Base):
 """
 This creates an engine attached to the database.
 """
-engine = create_engine('sqlite:///spell.db')
+engine = create_engine('postgresql://catalog:catalog@localhost/catalog')
 """
 Adds the create_all mapper to the Base class.
 """

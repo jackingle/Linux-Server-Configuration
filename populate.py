@@ -4,7 +4,7 @@ from database_setup import Base, School, Spell, User
 """
 This creates an engine attached to the database.
 """
-engine = create_engine('sqlite:///spell.db')
+engine = create_engine('postgresql://catalog:catalog@localhost/catalog')
 """
 Bind the engine to the metadata of the Base class so that the declaratives
 can be accessed through a DBSession instance.
@@ -31,13 +31,13 @@ into the session and then committed.
 Item1 = School(
                 name="Evocation",
                 id=1,
-                user_id=1,)
+                )
 session.add(Item1)
 session.commit()
 
 Item2 = School(
                 name="Abjuration",
-                id=1, user_id=1,
+                id=1,
                 description="spells of protection, blocking, and banishing.")
 session.add(Item2)
 session.commit()
@@ -52,13 +52,13 @@ session.commit()
 Spell2 = Spell(
                 name="Alarm",
                 school_id="Abjuration",
-                description="You set an alarm against unwanted intrusion.",
-                user_id=1)
+                description="You set an alarm against unwanted intrusion."
+                )
 session.add(Spell2)
 session.commit()
 
 User1 = User(
-            id=1,
+            id=21,
             name="placeholder",
             email="jack@placeholder.com",
             picture="something.jpg")
