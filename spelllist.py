@@ -102,7 +102,7 @@ def gconnect():
     try:
         # Upgrade the authorization code into a credentials object
         oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
-        oauth_flow.redirect_uri = 'http://localhost:8000'
+        oauth_flow.redirect_uri = 'http://18.223.189.177'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
         response = make_response(
