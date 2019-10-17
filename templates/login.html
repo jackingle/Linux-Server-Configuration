@@ -25,7 +25,7 @@
                 gapi.load('auth2', function () {
                     console.log("loaded auth2")
                     auth2 = gapi.auth2.getAuthInstance({
-                        client_id: '1008474172856-7lefq3vb51tm3ecop2ihnf5nmdaqc53v.apps.googleusercontent.com',
+                        client_id: '1008474172856-v6cp51elq4o2liqf4mpkegno2s8ge6mq.apps.googleusercontent.com',
                         scope: 'profile email openid'
                         });
                     $("#signinButton").click(function () {
@@ -39,7 +39,7 @@ console.log(resp)
               var auth_code = resp.code;
               $.ajax({
                   type: "POST",
-                  url: "http://localhost:8000/gconnect?state={{STATE}}",
+                  url: "http://18.223.189.177.xip.io/gconnect?state={{STATE}}",
                   processData: false,
                   contentType: 'application/octet-stream; charset=utf-8',
                   data: auth_code,

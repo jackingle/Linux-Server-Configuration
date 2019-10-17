@@ -6,6 +6,7 @@ from database_setup import Base, School, Spell, User
 from flask import session as login_session
 import random
 import string
+import os
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 import httplib2
@@ -24,9 +25,12 @@ app = Flask(__name__)
 """
 This loads a json with oauth2 related information for google.
 """
-with app.open_resource('client_secrets.json') as f:
-    CLIENT_ID = json.load(f)['web']['client_id']
-#CLIENT_ID = json.loads(
+PROJECT_ROOT = os.path.realpath(os.path.dirname(__file__))
+json_url = os.path.join(PROJECT_ROOT, 'client_secrets.json')
+CLIENT_ID = json.load(open(json_url))['web']['client_id']
+#with app.open_resource('client_secrets.json') as f:
+#    CLIENT_ID = json.load(f)['web']['client_id']
+ #  CLIENT_ID = json.loads(
  #   open('client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Item Catalog"
 """
@@ -77,8 +81,10 @@ that a user is who they say they are.
 
 @app.route('/login')
 def showLogin():
-    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
-                    for x in range(32))
+    numTuple = '1234'
+    state = numTuple
+#    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+#                    for x in range(32))
     login_session['state'] = state
     # return "The current session state is %s" % login_session['state']
     return render_template('login.html', STATE=state)
@@ -102,8 +108,8 @@ def gconnect():
 
     try:
         # Upgrade the authorization code into a credentials object
-        oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
-        oauth_flow.redirect_uri = 'http://localhost:80'
+        oauth_flow = flow_from_clientsecrets('home/ubuntu/Item-Catalog/static/client_secrets.json', scope='')
+        oauth_flow.redirect_uri = 'http://18.223.189.177'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
         response = make_response(
