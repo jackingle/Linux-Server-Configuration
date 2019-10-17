@@ -10,7 +10,7 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
 <meta name="google-signin-scope" content="profile email">
-<meta name="google-signin-client_id" content="1008474172856-7lefq3vb51tm3ecop2ihnf5nmdaqc53v.apps.googleusercontent.com">
+<meta name="google-signin-client_id" content="1008474172856-v6cp51elq4o2liqf4mpkegno2s8ge6mq.apps.googleusercontent.com">
 </head>
 
 <body>
@@ -39,14 +39,14 @@ console.log(resp)
               var auth_code = resp.code;
               $.ajax({
                   type: "POST",
-                  url: "http://18.223.189.177.xip.io/gconnect?state={{STATE}}",
+                  url: "http://18.223.189.177.xip.io:80/gconnect?state={{STATE}}",
                   processData: false,
                   contentType: 'application/octet-stream; charset=utf-8',
                   data: auth_code,
                   success: function (result) {
                       $('body').html(result);
                       setTimeout(function () {
-                          window.location.href = '/school/';
+                          window.location.href ='http://18.223.189.177.xip.io/school/';
                       }, 3000);
                   }
               });

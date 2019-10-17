@@ -61,7 +61,7 @@ def createUser(login_session):
 
 
 def getUserInfo(user_id):
-    user = session.query(User).filter_by(id=user_id).one()
+    user = session.query(User).filter_by(id=user_id).all()
     return user
 
 
@@ -108,19 +108,23 @@ def gconnect():
 
     try:
         # Upgrade the authorization code into a credentials object
-        oauth_flow = flow_from_clientsecrets('home/ubuntu/Item-Catalog/static/client_secrets.json', scope='')
-        oauth_flow.redirect_uri = 'http://18.223.189.177'
+        oauth_flow = flow_from_clientsecrets('home/ubuntu/Item-Catalog/client_secrets.json', scope='')
+        oauth_flow.redirect_uri = 'http://18.223.189.177.xip.io'
+        print("post message"+oauth_flow.redirect_uri)
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
+        print("FEE FEEE")
         response = make_response(
             json.dumps('Failed to upgrade the authorization code.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
 
     # Check that the access token is valid.
+    print("acces token plz")
     access_token = credentials.access_token
     url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
            % access_token)
+    print("OOF")
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1].decode('utf-8'))
     # If there was an error in the access token info, abort.
