@@ -1,83 +1,95 @@
 # Introduction
 
-This project is in development for Udacity.  It consists of an Item Catalog
-including a front end website with user authentication through OAuth2 and a
-back end database.  Properly logged in users may edit information in the
-database utilizing REST API.
+This project is in development for Udacity.  
 
+## Server Details
 
-## The Database
+IP Address:  18.223.189.177
 
-The database contains spells that you might find in a traditional
-RPG(Role Playing Game).  Three tables within the database include Users, School,
-and Spell.  Spells in RPGs are often split into Schools of Magic.  
+URL:  18.223.189.177.xip.io
 
+SSH Port: 2200
 
-## Installation
+DNS:  18.223.189.177.xip.io
 
-This project requires a virtual machine provided by Udacity and Python.
+## Software Installed
 
-- Python 2 or 3(any version)
-- Vagrant
-- ViritualBox
-
-The necessary virtual machine can be found [at this link](https://github.com/udacity/fullstack-nanodegree-vm/blob/master/vagrant/Vagrantfile).
-
-Install Vagrant from [here](https://www.vagrantup.com/downloads.html).
-
-Install ViritualBox from [here](https://www.virtualbox.org/wiki/Download_Old_Builds_5_1).
-
-
-### Start the virtual machine
-
-You will need some form of Unix shell in order to execute commands to log in to
-the virtual machine.  After you have installed the dependencies, use the
-following commands.  
-``` console
-cd /vagrant/
-vagrant up
-vagrant ssh
+The following commands added all of the necessary software to the server.
+```console
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install python-pip
+sudo pip3 flask
+sudo pip3 install sqlalchemy
+sudo pip3 install oauth2client
+sudo apt-get install PostgreSQL
+sudo apt-get install python-virtualenv
+sudo apt-get install apache2
+sudo apt-get install libapache2-mod-wsgi-py3
+sudo apt-get install git
 ```
 
+## Configuration changes made
 
-### Import required modules
+The SSH port was changed with `sudo nano /etc/ssh/sshd_config` where the 
+port number was changed from 22 to 2200.  In order to commit the changes
+`sudo service ssh restart`
 
-Depending on whether you would like to utilize python2 or python3, use pip or pip3 respectively.  It might be necessary in some cases to add sudo to the beginning of these install statements and append `--user`
+### Uncomplicated Firewall Changes
 
-``` console
-pip3 install flask
-pip3 install sqlalchemy
-pip3 install oauth2client
-pip3 install requests
+These commands restricted security to specifications.
+```console
+sudo ufw default deny incoming
+sudo ufw default deny outgoing
+sudo ufw allow 2200/tcp 
+sudo ufw allow 80/tcp 
+sudo ufw allow 123/udp 
+sudo ufw deny 22 
+sudo ufw enable 
+sudo ufw status 
 ```
 
+### Grader user created
 
-### Run the database setup file
+grader was created by `sudo adduser grader`
+The following commands next setup the grader, give sudo permission, and 
+complete security steps.
+`sudo nano /etc/sudoers.d/grader` provides a sudoer directory.
+Within that file add `grader ALL=(ALL:ALL) ALL`
 
-Initialize the database by running the code below.  This will generate the
-database and populate it with a few spells.  I will add more categories soon.
-``` console
-python3 database_setup.py
-python3 populate.py
+
+### RSA Key Creation
+
+RSA SSH keys are created with `ssh-keygen` outside of the server environment.
+Follow the next commands and copy your public key information to clipboard
+then paste that public key to the authorized_keys file.
+```console
+su - grader
+mkdir .ssh
+touch .ssh/authorized_keys
+nano .ssh/authorized_keys
+service ssh restart
 ```
 
+### Disable root login
 
-### Run the server file
-
-Place the files in the repository in the shared folder for the virtual machine.
-The example
-code below shows python3 being used but this program will work in python2 as
-well.
-``` console
-python3 spelllist.py
+Access the sshd config and uncomment and then change `PermitRootLogin` to `no`
+```console
+sudo nano /etc/ssh/sshd_config
 ```
 
+### Change Timezone to UTC
 
-### Access the website locally
+```console
+sudo timedatectl set-timezone UTC
+```
 
-The URL for the program is set to work only at http://localhost:8000
+## Third Party Resources
+
+AWS Lightsail provides the server instance.  The server was created as OS Only
+with Ubuntu 18.04LTS.  The cheapest payment plan was chosen.  For one method 
+of authentication, I used Lightsail's private SSH key along with Putty.  
+
+Git along with Github is used for version control.
 
 
-## Known issues
-
-Create a new spell should only appear once on specSpell.html.
